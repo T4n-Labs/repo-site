@@ -223,12 +223,20 @@ function buildAllCmds() {
    ============================================================ */
 
 /**
- * Tulis pilihan saat ini ke URL hash (tanpa entry history baru):
- *   #repo=glibc&arch=x86_64
- * Tujuan: pilihan bisa di-share via URL.
+ * Tulis state pencarian ke URL hash (tanpa menambah entry history):
+ *   #q=<kata>&arch=<arch>&page=<n>
+ * Komponen yang masih default (q kosong / arch "all" / page 1)
+ * tidak ditulis → hash hanya muncul setelah user benar-benar
+ * mencari / memfilter / berpindah halaman.
+ * Tujuan: URL hasil pencarian bisa di-share / di-bookmark.
  */
 function syncHash() {
-  history.replaceState(null, "", `#repo=${state.repo}&arch=${state.arch}`);
+  const p = new URLSearchParams();
+  if (state.q.trim()) p.set("q", state.q.trim());
+  if (state.arch !== "all") p.set("arch", state.arch);
+  if (state.page > 1) p.set("page", String(state.page));
+  const s = p.toString();
+  history.replaceState(null, "", s ? `#${s}` : location.pathname);
 }
 
 /** Baca hash URL saat load & terapkan ke state (jika valid). */
