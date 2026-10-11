@@ -1,0 +1,153 @@
+<!doctype html>
+<!--
+  ============================================================
+  T4n OS — SEARCH PAGE · ⚠ BEDA ANTAR FILE: repo-musl
+  ============================================================
+  Halaman  : search package untuk SATU repository
+  Style    : assets/style.css  (folder site/, tema Everforest)
+  Script   : assets/script.js  (folder site/, search engine)
+
+  PEMBEDA ANTAR FILE (hanya 3 baris):
+    1. <title>       : "repo-musl — T4n OS Search"
+    2. <meta desc>   : "...repository musl T4n OS..."
+    3. <body data-repo="musl">   ← menentukan repo yg dicari
+  File lain: glibc.html / server.html / security.html
+  (ganti 3 baris tsb, sisanya identik)
+
+  Elemen WAJIB (dipakai site/assets/script.js):
+    body[data-repo] #switch a[data-key] #cmd
+    [data-repo-name] [data-repo-label] [data-repo-desc]
+    #q #tabs .panel #panelTitle #count #notice #status
+    #results #install #toast
+  (#pagination dibuat otomatis oleh JS — jangan ditulis manual)
+
+  URL state: #q=<kata>&arch=<arch>&page=<n>  → bisa di-share
+  ============================================================
+-->
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Identitas: title & description spesifik repo ini -->
+    <title>repo-musl — T4n OS Search</title>
+    <meta
+      name="description"
+      content="Cari paket di repository musl T4n OS (Void Linux based)." />
+    <meta name="theme-color" content="#121816" />
+
+    <!-- Logo di ../assets (dipakai bersama homepage); style lokal -->
+    <link rel="icon" type="image/png" href="../assets/logo.png" />
+    <link rel="stylesheet" href="assets/style.css" />
+  </head>
+  <!-- data-repo: KUNCI halaman — script.js membaca ini untuk
+       memilih repo (fetch URL, tab arch, perintah pasang) -->
+  <body data-repo="musl">
+    <!-- ======================================================
+         HEADER — #switch: navigasi antar halaman search.
+         a[data-key] diberi class .active oleh paintChrome()
+         sesuai body[data-repo] — jangan hapus data-key.
+         ====================================================== -->
+    <header>
+      <div class="wrap bar">
+        <a class="brand" href="../index.html">T4n<b>OS</b></a>
+        <nav id="switch">
+          <a href="glibc.html" data-key="glibc">glibc</a>
+          <a href="musl.html" data-key="musl">musl</a>
+          <a href="security.html" data-key="security">security</a>
+          <a href="server.html" data-key="server">server</a>
+          <a
+            class="gh"
+            href="https://github.com/T4n-Labs"
+            target="_blank"
+            rel="noopener">
+            <!-- Logo GitHub inline SVG (fill: currentColor) -->
+            <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+              <path
+                d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z" />
+            </svg>
+            GitHub
+          </a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <!-- ======================================================
+           HERO — identitas repo + search bar + tab arsitektur
+           [data-repo-name/label/desc] diisi paintChrome().
+           #q     : input pencarian (live, debounce di script)
+           #tabs  : tab arch — dibangun buildTabs(), kosongkan saja
+           ====================================================== -->
+      <section class="hero">
+        <p class="crumb">
+          <a class="back" href="../index.html">← home</a> / site /
+          <span data-repo-name></span>
+        </p>
+        <h1>repo-<em data-repo-label></em></h1>
+        <p class="sub" data-repo-desc></p>
+
+        <div class="search" role="search">
+          <span class="pipe">|</span>
+          <input
+            id="q"
+            type="search"
+            placeholder="Search Package ..."
+            autocomplete="off"
+            spellcheck="false"
+            autofocus />
+          <kbd>/</kbd>
+        </div>
+
+        <div class="tabs" id="tabs" role="tablist"></div>
+      </section>
+
+      <!-- ======================================================
+           PANEL HASIL — window terminal
+           #panelTitle : simulasi "xbps-query -Rs ..." (diisi render())
+           #count      : "N pkg · hal x/y"
+           #notice     : banner peringatan (saat ini tak dipakai)
+           #status     : loading / error / empty-state (aria-live
+                         agar screen reader mengumumkan perubahan)
+           #results    : <ul> baris paket; <nav> pagination dibuat
+                         JS tepat setelah elemen ini
+           ====================================================== -->
+      <section class="panel">
+        <div class="panel-bar">
+          <span class="dot r"></span><span class="dot y"></span
+          ><span class="dot g"></span>
+          <span class="panel-title" id="panelTitle"></span>
+          <span class="panel-count" id="count"></span>
+        </div>
+        <div id="notice"></div>
+        <div id="status" aria-live="polite"></div>
+        <ul id="results" class="results"></ul>
+      </section>
+
+      <!-- ======================================================
+           CARA PASANG — #install diisi buildInstall():
+           satu baris perintah per arsitektur + tombol copy
+           ====================================================== -->
+      <section class="howto">
+        <h2>Cara pasang repository</h2>
+        <div id="install"></div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="wrap foot">
+        <p>
+          &copy; 2026 T4n Labs. Project Community. Built based on Void Linux.
+        </p>
+        <span><a href="../index.html">← homepage</a></span>
+      </div>
+    </footer>
+
+    <!-- Toast: feedback tombol copy (dipakai script via #toast) -->
+    <div id="toast" class="toast"></div>
+
+    <!-- Search engine — satu file untuk KEEMPAT halaman site/.
+         Pembeda hanya body[data-repo] di atas. -->
+    <script src="assets/script.js"></script>
+  </body>
+</html>

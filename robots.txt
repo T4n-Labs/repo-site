@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://repo.t4nlabs.web.id/sitemap.xml

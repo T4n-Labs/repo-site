@@ -1,0 +1,183 @@
+<!doctype html>
+<!--
+  ============================================================
+  T4n OS — Package Repository · HOMEPAGE
+  ============================================================
+  Halaman    : Beranda (simple, TANPA fitur search)
+  Style      : assets/style.css  (tema Everforest Dark)
+  Script     : assets/script.js  (render kartu + installer interaktif)
+  Live       : https://repo.t4nlabs.web.id
+
+  Struktur halaman:
+    1. <header>  — brand + navigasi ke 4 halaman search + GitHub
+    2. #install  — HERO        : judul, tagline, CTA
+    3. .repos    — REPO CARDS  : diisi otomatis oleh script.js (#repoGrid)
+    4. #install  — CARA PASANG : picker repo/arch + terminal perintah + <details> daftar semua perintah (#allCmds)
+    5. <footer>  — copyright
+
+  Elemen yang WAJIB ada (dipakai assets/script.js):
+    #cmd, #repoGrid, #repoTabs, #archTabs, #repoUrl,
+    #confName, #copyInstall, #allCmds, #toast
+
+  Catatan:
+    - Halaman search untuk tiap repo ada di site/{glibc,musl,server,security}.html
+    - state (repo & arch terpilih) disinkronkan ke URL hash:
+      #repo=glibc&arch=x86_64
+  ============================================================
+-->
+<html lang="id">
+  <head>
+    <!-- Karakter & viewport: wajib paling atas agar rendering konsisten -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Identitas halaman & SEO -->
+    <title>T4n OS - Package Repository</title>
+    <meta
+      name="description"
+      content="T4n OS (Void Linux based) package repository. glibc, musl, server, security — x86_64, i686, aarch64, armv6l, armv7l." />
+
+    <!-- Warna tema browser mobile (Everforest bg) -->
+    <meta name="theme-color" content="#121816" />
+
+    <!-- Aset statis: logo + stylesheet tema Everforest -->
+    <link rel="icon" type="image/png" href="assets/logo.png" />
+    <link rel="stylesheet" href="assets/style.css" />
+  </head>
+  <body>
+    <!-- ======================================================
+         HEADER — sticky navbar
+         .brand : logo teks "T4nOS" (aksen hijau via <b>)
+         nav    : link ke 4 halaman search + link GitHub org
+         ====================================================== -->
+    <header>
+      <div class="wrap bar">
+        <a class="brand" href="index.html">T4n<b>OS</b></a>
+        <nav>
+          <!-- Navigasi: satu halaman search per repository -->
+          <a href="site/glibc.html">glibc</a>
+          <a href="site/musl.html">musl</a>
+          <a href="site/security.html">security</a>
+          <a href="site/server.html">server</a>
+
+          <!-- Link eksternal: organisasi GitHub (logo inline SVG,
+               warna mengikuti teks lewat fill:currentColor di CSS) -->
+          <a
+            class="gh"
+            href="https://github.com/T4n-Labs"
+            target="_blank"
+            rel="noopener">
+            <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+              <path
+                d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z" />
+            </svg>
+            GitHub
+          </a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <!-- ======================================================
+           SECTION 1 — HERO
+           .crumb : baris terminal palsu; #cmd diketik otomatis
+                    oleh typeCmd() di script.js
+           .cta   : tombol utama → halaman search glibc,
+                    tombol sekunder → anchor #install di bawah
+           ====================================================== -->
+      <section class="hero">
+        <p class="crumb">
+          t4nlabs@t4nos:~$ <span id="cmd"></span><span class="caret"></span>
+        </p>
+        <h1>Simple. Rolling.<br /><em>Void-based.</em></h1>
+        <p class="sub">
+          Repository Package <b>T4n OS</b> - <b>Void Linux</b>, dikelola dengan
+          <b>xbps</b>.
+        </p>
+        <p class="sub"><b>@T4n-Labs</b></p>
+        <div class="cta">
+          <a class="btn" href="site/glibc.html">Search Package →</a>
+          <a class="btn ghost" href="#install">Cara pasang repo</a>
+        </div>
+      </section>
+
+      <!-- ======================================================
+           SECTION 2 — REPO CARDS
+           #repoGrid dikosongkan secara sengaja: diisi otomatis
+           oleh renderCards() dari data REPOS di script.js
+           (1 kartu = 1 repo, link ke site/<key>.html)
+           ====================================================== -->
+      <section class="repos">
+        <h2>Repositories</h2>
+        <div class="repo-grid" id="repoGrid"></div>
+      </section>
+
+      <!-- ======================================================
+           SECTION 3 — CARA PASANG (installer interaktif)
+           Alur: pilih repo (#repoTabs) → pilih arch (#archTabs)
+                 → perintah di terminal (.term) ikut ter-update
+                 → tombol #copyInstall menyalin 3 baris perintah.
+
+           #repoUrl  : URL repo sesuai pilihan (diisi renderCmd())
+           #confName : nama file .conf, mis. 10-glibc.conf
+           #allCmds  : <details> rekap SEMUA perintah semua repo
+                       (dibangun oleh buildAllCmds(), masing-masing
+                       baris punya tombol copy sendiri)
+           ====================================================== -->
+      <section class="install" id="install">
+        <h2>Cara pasang repository</h2>
+
+        <!-- Baris tab 1: pilih repository (glibc/musl/server/security) -->
+        <div
+          class="inst-row"
+          id="repoTabs"
+          role="tablist"
+          aria-label="Pilih repository"></div>
+
+        <!-- Baris tab 2: pilih arsitektur (x86_64/i686/...) -->
+        <div
+          class="inst-row small"
+          id="archTabs"
+          role="tablist"
+          aria-label="Pilih arsitektur"></div>
+
+        <!-- Terminal preview: perintah final sesuai pilihan di atas -->
+        <div class="term">
+          <div class="tline">
+            <span class="tp">$</span> mkdir -p /etc/xbps.d
+          </div>
+          <div class="tline">
+            <span class="tp">$</span> echo 'repository=<span id="repoUrl"></span
+            >' | sudo tee /etc/xbps.d/<span id="confName"></span>
+          </div>
+          <div class="tline"><span class="tp">$</span> xbps-install -Su</div>
+          <button class="copy" id="copyInstall">copy ⧉</button>
+        </div>
+
+        <!-- Rekap lengkap semua perintah (fallback jika user
+             tidak mau klik-klik, tinggal copy manual) -->
+        <details class="all-cmd">
+          <summary>Semua perintah - semua repo &amp; arsitektur</summary>
+          <div id="allCmds"></div>
+        </details>
+      </section>
+    </main>
+
+    <!-- FOOTER — copyright -->
+    <footer>
+      <div class="wrap foot">
+        <p>
+          &copy; 2026 T4n Labs. Project Community. Built based on Void Linux.
+        </p>
+      </div>
+    </footer>
+
+    <!-- Toast notifikasi: dipakai feedback tombol copy
+         (muncul via class .show, dikontrol toast() di script.js) -->
+    <div id="toast" class="toast"></div>
+
+    <!-- Script utama homepage — taruh di akhir <body> agar
+         seluruh DOM sudah ada saat boot() dijalankan -->
+    <script src="assets/script.js"></script>
+  </body>
+</html>
