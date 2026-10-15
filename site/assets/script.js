@@ -423,7 +423,7 @@ function rowHTML(p, q) {
       <span class="chip arch">${esc(p.arch)}</span>
       <span class="size">${esc(fmtSize(p.size))}</span>
     </a>
-    <button class="copy" data-install="${esc(p.name)}" title="Salin perintah install">xbps-install ⧉</button>
+    <button class="copy" data-install="${esc(p.name)}" title="Salin perintah install">xbps-install -S ⧉</button>
   </li>`;
 }
 
@@ -565,7 +565,7 @@ function buildInstall() {
   host.innerHTML = `<div class="inst">
     ${CONFIG.archs
       .map((a) => {
-        const line = `echo 'repository=${CONFIG.site}${a}/' | sudo tee /etc/xbps.d/${CONFIG.conf}`;
+        const line = `echo 'repository=${CONFIG.site}${a}' | sudo tee /etc/xbps.d/${CONFIG.conf}`;
         return `<div class="inst-line">
         <span class="chip arch">${esc(a)}</span>
         <code>${esc(line)}</code>
@@ -691,7 +691,7 @@ function bindUI() {
     }
     const ins = e.target.closest("[data-install]");
     if (ins) {
-      const cmd = `xbps-install ${ins.dataset.install}`;
+      const cmd = `xbps-install -S ${ins.dataset.install}`;
       try {
         await navigator.clipboard.writeText(cmd);
         toast(`✓ ${cmd}`);

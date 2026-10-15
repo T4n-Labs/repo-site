@@ -28,7 +28,7 @@
    Hapus baris @import untuk mode 100% offline — heading akan
    fallback ke Georgia (visual mirip).
    ============================================================ */
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&display=swap');
 
 /* ============================================================
    1. TOKEN DESAIN (:root)
@@ -62,7 +62,7 @@
   --red:#e67e80;
   --radius:12px;
   --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-  --serif:"Cormorant Garamond",Georgia,"Times New Roman",serif;
+  --serif:"Playfair Display",Georgia,"Times New Roman",serif;
   --mono:ui-monospace,"JetBrains Mono","Fira Code","Cascadia Code",Menlo,Consolas,monospace;
 }
 
@@ -256,6 +256,7 @@ header{
 }
 .hero h1 em{
   font-style:normal;
+  font-synthesis:none;
   color:var(--accent)
 }
 .sub{

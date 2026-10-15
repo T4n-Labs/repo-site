@@ -108,7 +108,7 @@ const R = () => REPOS[state.repo];
  * @returns {string} perintah multi-baris siap tempel ke terminal
  */
 function cmdFull(r, arch) {
-  return `mkdir -p /etc/xbps.d\necho 'repository=${r.base}${arch}/' | sudo tee /etc/xbps.d/${r.conf}\nxbps-install -uS`;
+  return `mkdir -p /etc/xbps.d\necho 'repository=${r.base}${arch}' | sudo tee /etc/xbps.d/${r.conf}\nxbps-install -Su`;
 }
 
 /**
@@ -116,7 +116,7 @@ function cmdFull(r, arch) {
  * Dipakai di daftar #allCmds (per kombinasi repo × arch).
  */
 function cmdLine(r, arch) {
-  return `echo 'repository=${r.base}${arch}/' | sudo tee /etc/xbps.d/${r.conf}`;
+  return `echo 'repository=${r.base}${arch}' | sudo tee /etc/xbps.d/${r.conf}`;
 }
 
 /* ============================================================
@@ -180,7 +180,7 @@ function renderArchTabs() {
  */
 function renderCmd() {
   const r = R();
-  $("#repoUrl").textContent = `${r.base}${state.arch}/`;
+  $("#repoUrl").textContent = `${r.base}${state.arch}`;
   $("#confName").textContent = r.conf;
   $("#copyInstall").dataset.copy = cmdFull(r, state.arch);
 }
