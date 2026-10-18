@@ -232,9 +232,8 @@ function buildAllCmds() {
  */
 function syncHash() {
   const p = new URLSearchParams();
-  if (state.q.trim()) p.set("q", state.q.trim());
-  if (state.arch !== "all") p.set("arch", state.arch);
-  if (state.page > 1) p.set("page", String(state.page));
+  if (state.repo !== "glibc") p.set("repo", state.repo);
+  if (state.arch !== DEFAULT_ARCH) p.set("arch", state.arch);
   const s = p.toString();
   history.replaceState(null, "", s ? `#${s}` : location.pathname);
 }
