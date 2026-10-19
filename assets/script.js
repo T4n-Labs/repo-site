@@ -48,7 +48,7 @@ const REPOS = {
     base: "https://t4n-labs.github.io/repo-musl/",
     conf: "10-musl.conf",
     desc: "Lightweight · musl libc",
-    archs: ["x86_64", "i686", "aarch64", "armv6l", "armv7l"],
+    archs: ["x86_64", "aarch64", "armv6l", "armv7l"],
   },
   server: {
     repo: "repo-server",
