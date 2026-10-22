@@ -7,6 +7,9 @@
   Style      : assets/style.css  (tema Everforest Dark)
   Script     : assets/script.js  (render kartu + installer interaktif)
   Live       : https://repo.t4nlabs.web.id
+  SEO        : meta lengkap (OG/Twitter), canonical, robots meta,
+               JSON-LD (WebSite + Organization + ItemList),
+               robots.txt & sitemap.xml utk subdomain repo
 
   Struktur halaman:
     1. <header>  — brand + navigasi ke 4 halaman search + GitHub
@@ -32,13 +35,87 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- Identitas halaman & SEO -->
-    <title>T4n OS - Package Repository</title>
+    <title>T4n OS Package Repository | Repo XBPS Berbasis Void Linux</title>
     <meta
       name="description"
-      content="T4n OS (Void Linux based) package repository. glibc, musl, server, security — x86_64, i686, aarch64, armv6l, armv7l." />
+      content="Repository paket resmi T4n OS berbasis Void Linux. Jelajahi repo glibc, musl, server, security untuk x86_64, i686, aarch64, armv6l, dan armv7l via XBPS." />
+    <meta name="author" content="T4n Labs" />
+    <meta
+      name="keywords"
+      content="t4n os repository, repo void linux, xbps repository, repo paket glibc, repo musl, distro linux indonesia" />
+    <!-- Crawling: indeks penuh + preview gambar besar di hasil pencarian -->
+    <meta
+      name="robots"
+      content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <!-- Canonical: cegah duplikasi *.github.io vs custom domain -->
+    <link rel="canonical" href="https://repo.t4nlabs.web.id/" />
 
     <!-- Warna tema browser mobile (Everforest bg) -->
     <meta name="theme-color" content="#121816" />
+
+    <!-- ===== OPEN GRAPH: preview saat link dibagikan (WA/Discord/FB) ===== -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="T4n OS" />
+    <meta property="og:title" content="T4n OS Package Repository | Repo XBPS Berbasis Void Linux" />
+    <meta
+      property="og:description"
+      content="Repository paket resmi T4n OS berbasis Void Linux. Jelajahi repo glibc, musl, server, security untuk x86_64, i686, aarch64, armv6l, dan armv7l via XBPS." />
+    <meta property="og:url" content="https://repo.t4nlabs.web.id/" />
+    <meta property="og:image" content="https://repo.t4nlabs.web.id/assets/logo.png" />
+    <meta property="og:locale" content="id_ID" />
+
+    <!-- ===== TWITTER CARD ===== -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="T4n OS Package Repository | Repo XBPS Berbasis Void Linux" />
+    <meta
+      name="twitter:description"
+      content="Repository paket resmi T4n OS berbasis Void Linux. Jelajahi repo glibc, musl, server, security untuk x86_64, i686, aarch64, armv6l, dan armv7l via XBPS." />
+    <meta name="twitter:image" content="https://repo.t4nlabs.web.id/assets/logo.png" />
+
+    <!-- ===== STRUCTURED DATA (schema.org JSON-LD) =====
+         @graph: WebSite + Organization + ItemList.
+         Organization memakai @id yang SAMA dengan situs utama
+         t4nos.t4nlabs.web.id agar entitas Google tergabung. -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": "https://repo.t4nlabs.web.id/#website",
+          "name": "T4n OS Package Repository",
+          "url": "https://repo.t4nlabs.web.id/",
+          "inLanguage": "id-ID",
+          "publisher": { "@id": "https://t4nos.t4nlabs.web.id/#organization" }
+        },
+        {
+          "@type": "Organization",
+          "@id": "https://t4nos.t4nlabs.web.id/#organization",
+          "name": "T4n Labs",
+          "url": "https://t4nos.t4nlabs.web.id/",
+          "logo": "https://repo.t4nlabs.web.id/assets/logo.png",
+          "sameAs": [
+            "https://github.com/T4n-Labs",
+            "https://gitlab.com/t4n-labs",
+            "https://www.instagram.com/t4n_labs",
+            "https://discord.gg/yM5s7RWBxq"
+          ]
+        },
+        {
+          "@type": "ItemList",
+          "@id": "https://repo.t4nlabs.web.id/#repositories",
+          "name": "Repository Paket T4n OS",
+          "description": "Empat repository paket XBPS: glibc, musl, server, dan security.",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Repo glibc", "url": "https://repo.t4nlabs.web.id/site/glibc.html" },
+            { "@type": "ListItem", "position": 2, "name": "Repo musl", "url": "https://repo.t4nlabs.web.id/site/musl.html" },
+            { "@type": "ListItem", "position": 3, "name": "Repo server", "url": "https://repo.t4nlabs.web.id/site/server.html" },
+            { "@type": "ListItem", "position": 4, "name": "Repo security", "url": "https://repo.t4nlabs.web.id/site/security.html" }
+          ]
+        }
+      ]
+    }
+    </script>
 
     <!-- Aset statis: logo + stylesheet tema Everforest -->
     <link rel="icon" type="image/png" href="assets/logo.png" />
@@ -56,7 +133,7 @@
           <img class="brand-logo" src="assets/logo.png" alt="Logo T4n OS" />
           <span>T4n<b>OS</b></span>
         </a>
-        <nav>
+        <nav aria-label="Navigasi utama">
           <!-- Navigasi: satu halaman search per repository -->
           <a href="site/glibc.html">glibc</a>
           <a href="site/musl.html">musl</a>
@@ -111,7 +188,7 @@
            (1 kartu = 1 repo, link ke site/<key>.html)
            ====================================================== -->
       <section class="repos">
-        <h2>Repositories</h2>
+        <h2>Repositori Paket T4n OS</h2>
         <div class="repo-grid" id="repoGrid"></div>
       </section>
 
@@ -128,7 +205,7 @@
                        baris punya tombol copy sendiri)
            ====================================================== -->
       <section class="install" id="install">
-        <h2>Cara pasang repository</h2>
+        <h2>Cara pasang repository T4n OS</h2>
 
         <!-- Baris tab 1: pilih repository (glibc/musl/server/security) -->
         <div
@@ -170,7 +247,9 @@
     <footer>
       <div class="wrap foot">
         <p>
-          &copy; 2026 T4n Labs. Project Community. Built based on Void Linux.
+          &copy; 2026 <a href="https://t4nos.t4nlabs.web.id/">T4n Labs</a>.
+          Project Community. Built based on
+          <a href="https://voidlinux.org/" target="_blank" rel="noopener">Void Linux</a>.
         </p>
       </div>
     </footer>
